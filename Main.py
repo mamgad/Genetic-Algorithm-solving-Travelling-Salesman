@@ -8,9 +8,19 @@ import matplotlib
 list_of_nodes = []
 list_of_edges = []
 list_of_paths = []
-
-
-
+best_path=None
+r_map=None
+crossover_mapping=None
+def crossover():
+    for i in range(0,20):
+        list_of_paths[crossover_mapping[0]].edges
+def random_map():#CROSS OVER RATE !!
+    global r_map
+    global crossover_mapping
+    r_map=random.sample(range(30), 8),random.sample(range(30), 8)
+    print r_map
+    crossover_mapping=random.sample(range(100), 20),random.sample(range(100), 20)
+    print crossover_mapping
 def generate_random_graph():
     global list_of_nodes
     for i in range(0, 30):  # 30 Random Points
@@ -52,12 +62,16 @@ def traverse():
 
     list_of_edges = []
 
-for j in range(1,100):
+for j in range(0,100):
     traverse()
+    sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
+    min_of_generation = sorted_pathes[0]
+    print sorted_pathes[0].cost
+    if (best_path is None or best_path.cost > min_of_generation):
+        best_path = min_of_generation #UPDATE BEST PATH
+    '''NEW GENERATION STARTS'''
+    random_map()
 print "Count is " + str(len(list_of_paths))
-
-imin = min(list_of_paths, key=lambda x:x.cost)
-print imin.cost
 
 
 
