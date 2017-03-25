@@ -15,6 +15,7 @@ class path:
 
 
 
+
 def dist(node1,node2):
     x1=node1.x
     y1=node1.y
