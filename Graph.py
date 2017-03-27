@@ -1,5 +1,51 @@
 import math
 import random
+import copy
+def crossover(path1,path2):
+    print 'BEFORE'
+    print "path1"
+    path1.dump()
+    print 'path2'
+    path2.dump()
+    print "\n"
+
+    rand1 = random.sample(range(30), 8)
+    rand2 = copy.deepcopy(rand1)
+    random.shuffle(rand2)
+
+    print rand1
+    print rand2
+    temp_path1=copy.deepcopy(path1)
+    temp_path2 = copy.deepcopy(path2)
+    for i in range (8):
+
+        for j in range (0,len(path1.nodes)):
+            if (path1.nodes[j].number==rand1[i]):
+                node1_index=j
+                break
+        for k in range (0,len(path2.nodes)):
+            if (path2.nodes[k].number==rand2[i]):
+                node2_index=k
+
+
+        path1.nodes[node1_index]=copy.deepcopy(temp_path2.nodes[node2_index])
+        path2.nodes[node2_index]=copy.deepcopy(temp_path1.nodes[node1_index])
+
+        print"swapping "+str(node1_index)+","+str(node2_index)
+
+
+    print 'After'
+    print "path1"
+    path1.dump()
+    print 'path2'
+    path2.dump()
+    print "\n"
+    return path1
+
+    print '\n'+str(path1.dump())+'\n'+"\n"
+    print
+    path1.getCost()
+
 class node:
     def __init__(self, x_loc, y_loc,number):
         self.x=x_loc
@@ -35,6 +81,7 @@ class path:
             self.nodes[rand1]=self.nodes[rand2]
             self.nodes[rand2]=temp_node
             self.getCost()
+
         return self
     def getCost(self):
         total_cost=0

@@ -1,6 +1,6 @@
 import Graph
 import random
-
+import copy
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
@@ -78,16 +78,34 @@ generate_random_graph()
 def mutate_generation():
     global list_of_paths
     global best_path
+    global min_of_generation
+
     for i in range(0,len(list_of_paths)-1):
+
         if(1):#20% Mutation Rate
             #print "IF"
             list_of_paths[i]=list_of_paths[i].mutate()#TEMPROAARY!!!
+
     sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
+    list_of_paths=sorted_pathes
     min_of_generation = sorted_pathes[0]
-    if ((best_path is None) or (best_path.getCost() > min_of_generation.getCost())):
+
+
+
+
+    localmin=min_of_generation.getCost()
+
+    if (best_path is None):
         best_path = min_of_generation
-        print str(best_path.getCost()) +" is  > " + str(min_of_generation.getCost())
-    print "BEST SO FAR IS "+str(best_path.getCost())
+
+        print "Best path is NONE!!!!"
+    globalmin=best_path.getCost()
+    if (globalmin> localmin):
+        if  (best_path.getCost() > min_of_generation.getCost()):
+
+            best_path = copy.deepcopy(min_of_generation)
+
+    print ""+str(best_path.getCost())
 
 def generate():
     for j in range(0, 100):  # Find 100 Random path
@@ -97,22 +115,26 @@ def generate():
 
         traverse()
         sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
-        min_of_generation = sorted_pathes[0]
-        print sorted_pathes[0].cost
-        if (best_path is None or best_path.cost > min_of_generation):
-            best_path = min_of_generation  # UPDATE BEST PATH
+        #min_of_generation = sorted_pathes[0]
+        #print sorted_pathes[0].cost
+        #if (best_path is None or best_path.cost > min_of_generation):
+        #    best_path = min_of_generation  # UPDATE BEST PATH
 
         '''NEW GENERATION STARTS'''
         random_map()
     print "Count is " + str(len(list_of_paths))
 
 generate()
-list_of_paths[0].dump()
-print "Mutation Test"
-list_of_paths[0].mutate()
-list_of_paths[0].dump()
+
 
 show_paths_costs()
-for i in range(100):
+for i in range(200):
+
     mutate_generation()
+list_of_paths[0].dump()
+print "return"
+print Graph.crossover(list_of_paths[0],list_of_paths[1]).dump()
+print "--"
+list_of_paths[0].dump()
+
 
