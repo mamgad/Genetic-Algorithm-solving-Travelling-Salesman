@@ -37,7 +37,7 @@ def generate_random_graph():
 def show_paths_costs():
     print "\n===================\nPATH#\tPATH COST"
     for i in range(0, 100):
-        print str(i)+'\t\t'+str(sorted_pathes[i].cost)
+        print str(i)+'\t\t1 '+str(list_of_paths[i].cost)+'\t\t2 '+str(list_of_paths[i].getCost())+'\t' +str(list_of_paths[i].getCost()-list_of_paths[i].cost)
     print "\n==================="
 def traverse():
     global list_of_nodes
@@ -45,6 +45,8 @@ def traverse():
     global list_of_paths
     x = range(0, 30)
     random.shuffle(x)
+
+
     #plt.scatter(x, x)
     # plt.show()
 
@@ -66,7 +68,7 @@ def traverse():
 
     path1 = Graph.path(list_of_edges, total_cost)
     list_of_paths.append(path1)
-    print "Test\t"+str(path1.cost)+'\t'+str(path1.getCost())
+
 
     list_of_edges = []
 
@@ -74,9 +76,18 @@ def traverse():
 
 generate_random_graph()
 def mutate_generation():
-    for i in range(0,len(list_of_paths)):
-        if(random.random<0.2):#20% Mutation Rate
-            list_of_paths[i].mutate()
+    global list_of_paths
+    global best_path
+    for i in range(0,len(list_of_paths)-1):
+        if(1):#20% Mutation Rate
+            #print "IF"
+            list_of_paths[i]=list_of_paths[i].mutate()#TEMPROAARY!!!
+    sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
+    min_of_generation = sorted_pathes[0]
+    if ((best_path is None) or (best_path.getCost() > min_of_generation.getCost())):
+        best_path = min_of_generation
+        print str(best_path.getCost()) +" is  > " + str(min_of_generation.getCost())
+    print "BEST SO FAR IS "+str(best_path.getCost())
 
 def generate():
     for j in range(0, 100):  # Find 100 Random path
@@ -100,4 +111,8 @@ list_of_paths[0].dump()
 print "Mutation Test"
 list_of_paths[0].mutate()
 list_of_paths[0].dump()
+
 show_paths_costs()
+for i in range(100):
+    mutate_generation()
+

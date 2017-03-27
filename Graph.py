@@ -26,14 +26,15 @@ class path:
             print str(i)+'\t'+str(self.nodes[i].number)
     def mutate(self):
         rand_i=random.randint(0,10)
-        print "rand_i is "+str(rand_i)
+        #print "rand_i is "+str(rand_i)
         for i in range (0,rand_i):
             rand1=random.randint(0,29)
             rand2=random.randint(0,29)
-            print "Swapping "+str(rand1)+" with "+str(rand2)
+            #print "Swapping "+str(rand1)+" with "+str(rand2)
             temp_node=self.nodes[rand1]; '''Swapping nodes (mutating)'''
             self.nodes[rand1]=self.nodes[rand2]
             self.nodes[rand2]=temp_node
+            self.getCost()
         return self
     def getCost(self):
         total_cost=0
@@ -41,10 +42,11 @@ class path:
             first_node = self.nodes[i];
             second_node = self.nodes[i + 1];
 
-            cost = dist(first_node, second_node)
-            total_cost += cost
+            ab_cost = dist(first_node, second_node)
+            total_cost += ab_cost
+        #print str(total_cost)+" TC"
+        self.cost = total_cost
         return total_cost
-
 
 
 
