@@ -17,14 +17,21 @@ crossover_mapping=None
 
 def crossover():
     global list_of_paths
-    list_of_paths=list_of_paths[:33]
+    list_of_paths=list_of_paths[:400]
 
-    for j in range(0,67):
-        rand1=random.randint(0,32)
-        rand2=random.randint(0,32)
-        list_of_paths.append(Graph.crossover(list_of_paths[rand1], list_of_paths[rand2]))
+    for j in range(0,300):
+        rand1 = random.randint(0, 170-1)
+        rand2 = random.randint(0, 170-1)
+        if (random.random()<0.9):
+            #list_of_paths.append(Graph.crossover(list_of_paths[rand1], list_of_paths[rand2]))
+            result=Graph.crossover(list_of_paths[rand1], list_of_paths[rand2])
+            list_of_paths.append(result[0])
+            list_of_paths.append(result[1])
+            #print 'in'+str(len(list_of_paths))
+        else:
+            list_of_paths.append(list_of_paths[rand1])
+            list_of_paths.append(list_of_paths[rand2])
 
-    #print 'in'+str(len(list_of_paths))
 
 def random_map():#CROSS OVER RATE !!
     global r_map
@@ -50,7 +57,7 @@ def generate_random_graph():
         print str(node_number) + '\t\t' + str(randX) + '\t' + str(randY)
 def show_paths_costs():
     print "\n===================\nPATH#\tPATH COST"
-    for i in range(0, 100):
+    for i in range(0, len(list_of_paths)-1):
         print str(i)+'\t\t1 '+str(list_of_paths[i].cost)+'\t\t2 '+str(list_of_paths[i].getCost())+'\t' +str(list_of_paths[i].getCost()-list_of_paths[i].cost)
     print "\n==================="
 def traverse():
@@ -93,43 +100,27 @@ def mutate_generation():
     global list_of_paths
     global best_path
     global min_of_generation
+    print "LEN IS "+str(len(list_of_paths))
 
-    for i in range(0,len(list_of_paths)-1):
+    for i in range(10,len(list_of_paths)-11):
         #print len(list_of_paths)
         rand=random.random()
-        if(rand<0.25):#20% Mutation Rate
+        if(rand<0.003):#20% Mutation Rate
             #print "mut"
             list_of_paths[i]=list_of_paths[i].mutate()#TEMPROAARY!!!
 
-    sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
-    list_of_paths=sorted_pathes
-    min_of_generation = sorted_pathes[0]
 
-
-
-
-    localmin=min_of_generation.getCost()
-
-    if (best_path is None):
-        best_path = min_of_generation
-
-        print "Best path is NONE!!!!"
-    globalmin=best_path.getCost()
-    if (globalmin> localmin):
-        if  (best_path.getCost() > min_of_generation.getCost()):
-
-            best_path = copy.deepcopy(min_of_generation)
 
     #print ""+str(best_path.getCost())
 
 def generate():
-    for j in range(0, 100):  # Find 100 Random path
+    for j in range(0, 1000):  # Find 1000 Random path
         global list_of_paths
         global min_of_generation
         global best_path
 
         traverse()
-        sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
+        #sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
         #min_of_generation = sorted_pathes[0]
         #print sorted_pathes[0].cost
         #if (best_path is None or best_path.cost > min_of_generation):
@@ -144,30 +135,45 @@ generate()
 
 show_paths_costs()
 plt.show()
+loc_avg=0
+for j in range(70000):
 
-for i in range(70):
 
-    try:
-        for i in range(len(best_path.nodes)-1):
-            plt.plot([100, 100], [6000, 6000])
-
-    except:
-        print ""
 
     plt.scatter(xaxis, yaxis)
     plt.pause(0.05)
     plt.clf()
     plt.plot(xaxis, yaxis)
 
-    mutate_generation()
-    crossover()
     sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
     list_of_paths = sorted_pathes
+
+    #mutate_generation()
+    crossover()
+
+    min_of_generation = sorted_pathes[0]
+    if (best_path is None):
+        best_path = min_of_generation
+
+
+
     print "Min is :"+str(best_path.getCost())
     for i in range(len(best_path.nodes)):
         xaxis[i]=best_path.nodes[i].x
         yaxis[i]=best_path.nodes[i].y
 
+
+
+    localmin = min_of_generation.getCost()
+
+    loc_avg=(loc_avg+localmin)
+    print "len is "+str(len(list_of_paths))
+
+    print "loc ="+str(localmin)+"loc_avg ="+str(loc_avg/(j+1))
+    #globalmin = best_path.getCost()
+    globalmin =best_path.cost
+    if (globalmin > localmin):
+        best_path = copy.deepcopy(min_of_generation)
 print "Xaxis\tYaxis"
 for i in range(0,len(best_path.nodes) - 1):
 

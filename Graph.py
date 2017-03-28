@@ -4,7 +4,7 @@ import copy
 def crossover(path1,path2):
 
 
-    rand1 = random.sample(range(30), 8)
+    rand1 = random.sample(range(30), 3)
     rand2 = copy.deepcopy(rand1)
     random.shuffle(rand2)
 
@@ -18,7 +18,7 @@ def crossover(path1,path2):
     #print 'path2'
     #temp_path2.dump()
     #print "\n"
-    for i in range (8):
+    for i in range (3):
 
         for j in range (0,len(path1.nodes)):
             if (path1.nodes[j].number==rand1[i]):
@@ -41,7 +41,7 @@ def crossover(path1,path2):
         #temp_path2.dump()
         #print "\n"
 
-    return temp_path1
+    return temp_path1,temp_path2
 
 
 class node:
@@ -69,7 +69,7 @@ class path:
         for i in range(len(self.nodes)):
             print str(i)+'\t'+str(self.nodes[i].number)
     def mutate(self):
-        rand_i=random.randint(0,10)
+        rand_i=random.randint(1,3)
         #print "rand_i is "+str(rand_i)
         for i in range (0,rand_i):
             rand1=random.randint(0,29)
