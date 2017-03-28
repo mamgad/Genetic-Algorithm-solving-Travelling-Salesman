@@ -9,28 +9,42 @@ list_of_nodes = []
 list_of_edges = []
 list_of_paths = []
 new_gen_paths = []
+xaxis=[]
+yaxis=[]
 best_path=None
 r_map=None
 crossover_mapping=None
 
 def crossover():
-    for i in range(0,20):
-        list_of_paths[crossover_mapping[0]].edges
+    global list_of_paths
+    list_of_paths=list_of_paths[:33]
+
+    for j in range(0,67):
+        rand1=random.randint(0,32)
+        rand2=random.randint(0,32)
+        list_of_paths.append(Graph.crossover(list_of_paths[rand1], list_of_paths[rand2]))
+
+    #print 'in'+str(len(list_of_paths))
+
 def random_map():#CROSS OVER RATE !!
     global r_map
     global crossover_mapping
     r_map=random.sample(range(30), 8),random.sample(range(30), 8)
     #print r_map
-    crossover_mapping=random.sample(range(100), 20),random.sample(range(100), 20)
+
     #print crossover_mapping
 def generate_random_graph():
     global list_of_nodes
+    global xaxis
+    global yaxis
     print "Node#\tX-axis\tY-axis"
     for i in range(0, 30):  # 30 Random Points
         randX = random.randint(1, 102400)
         randY = random.randint(1, 102400)
         node_number=i
         node1 = Graph.node(randX, randY,node_number)
+        xaxis.append(randX)
+        yaxis.append(randY)
         list_of_nodes.append(node1)
 
         print str(node_number) + '\t\t' + str(randX) + '\t' + str(randY)
@@ -81,9 +95,10 @@ def mutate_generation():
     global min_of_generation
 
     for i in range(0,len(list_of_paths)-1):
-
-        if(1):#20% Mutation Rate
-            #print "IF"
+        #print len(list_of_paths)
+        rand=random.random()
+        if(rand<0.25):#20% Mutation Rate
+            #print "mut"
             list_of_paths[i]=list_of_paths[i].mutate()#TEMPROAARY!!!
 
     sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
@@ -105,7 +120,7 @@ def mutate_generation():
 
             best_path = copy.deepcopy(min_of_generation)
 
-    print ""+str(best_path.getCost())
+    #print ""+str(best_path.getCost())
 
 def generate():
     for j in range(0, 100):  # Find 100 Random path
@@ -122,19 +137,46 @@ def generate():
 
         '''NEW GENERATION STARTS'''
         random_map()
-    print "Count is " + str(len(list_of_paths))
+    #print "Count is " + str(len(list_of_paths))
 
 generate()
 
 
 show_paths_costs()
-for i in range(200):
+plt.show()
+
+for i in range(70):
+
+    try:
+        for i in range(len(best_path.nodes)-1):
+            plt.plot([100, 100], [6000, 6000])
+
+    except:
+        print ""
+
+    plt.scatter(xaxis, yaxis)
+    plt.pause(0.05)
+    plt.clf()
+    plt.plot(xaxis, yaxis)
 
     mutate_generation()
-list_of_paths[0].dump()
-print "return"
-print Graph.crossover(list_of_paths[0],list_of_paths[1]).dump()
-print "--"
-list_of_paths[0].dump()
+    crossover()
+    sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
+    list_of_paths = sorted_pathes
+    print "Min is :"+str(best_path.getCost())
+    for i in range(len(best_path.nodes)):
+        xaxis[i]=best_path.nodes[i].x
+        yaxis[i]=best_path.nodes[i].y
+
+print "Xaxis\tYaxis"
+for i in range(0,len(best_path.nodes) - 1):
+
+    print str(best_path.nodes[i].x)+"\t"+str(best_path.nodes[i].y)
+plt.show()
+#list_of_paths[0].dump()
+#print "return"
+#print Graph.crossover(list_of_paths[0],list_of_paths[1]).dump()
+#print "--"
+#list_of_paths[0].dump()
 
 
