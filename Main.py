@@ -1,28 +1,43 @@
 import Graph
 import random
 import copy
-import numpy as np
+import time
 import matplotlib.pyplot as plt
 import matplotlib
-
+start_time=time.time()
+detection_time=start_time
+time_list=[]
+cost_list=[]
 list_of_nodes = []
 list_of_edges = []
 list_of_paths = []
-new_gen_paths = []
+least_cost=0.0
 xaxis=[]
 yaxis=[]
 best_path=None
 r_map=None
 crossover_mapping=None
 
+def nodes_swap():
+    global best_path
+    global list_of_paths
+    if (random.random()<0.05 and (best_path is not None)):
+        print "Swapping"
+        path = copy.deepcopy(best_path)
+        iterations =len(best_path.nodes)
+        for i in range (iterations):
+            for j in range(iterations):
+                path.nodes[i],path.nodes[j]=path.nodes[j],path.nodes[i]
+                list_of_paths.append(path)
+    print "lenth in swap is "+str(len(list_of_paths))
 def crossover():
     global list_of_paths
     list_of_paths=list_of_paths[:400]
 
-    for j in range(0,300):
-        rand1 = random.randint(0, 170-1)
-        rand2 = random.randint(0, 170-1)
-        if (random.random()<0.9):
+    for j in range(0,200):
+        rand1 = random.randint(0, 200-1)
+        rand2 = random.randint(0, 400-1)
+        if (random.random()<1):
             #list_of_paths.append(Graph.crossover(list_of_paths[rand1], list_of_paths[rand2]))
             result=Graph.crossover(list_of_paths[rand1], list_of_paths[rand2])
             list_of_paths.append(result[0])
@@ -40,6 +55,38 @@ def random_map():#CROSS OVER RATE !!
     #print r_map
 
     #print crossover_mapping
+def generate_square():#for debugging
+    global list_of_nodes
+    global xaxis
+    global yaxis
+    for i in range (8):
+        y=20000;
+        x=20000+(70000/8)*i
+        node1 = Graph.node(x, y, i)
+        xaxis.append(x)
+        yaxis.append(y)
+        list_of_nodes.append(node1)
+    for i in range (8,22,2):
+        y=20000+((70000/12)*(i-8))
+        x=20000
+        node1 = Graph.node(x, y, i)
+        xaxis.append(x)
+        yaxis.append(y)
+        list_of_nodes.append(node1)
+        y = 20000+((70000/12)*(i-8))
+        x = 90000
+        node1 = Graph.node(x, y, i+1)
+        xaxis.append(x)
+        yaxis.append(y)
+        list_of_nodes.append(node1)
+    for i in range (22,30):
+        y=90000;
+        x=20000+(70000/8)*(i-22)
+        node1 = Graph.node(x, y, i)
+        xaxis.append(x)
+        yaxis.append(y)
+        list_of_nodes.append(node1)
+
 def generate_random_graph():
     global list_of_nodes
     global xaxis
@@ -95,7 +142,8 @@ def traverse():
 
 
 
-generate_random_graph()
+#generate_random_graph()
+generate_square()
 def mutate_generation():
     global list_of_paths
     global best_path
@@ -105,7 +153,7 @@ def mutate_generation():
     for i in range(10,len(list_of_paths)-11):
         #print len(list_of_paths)
         rand=random.random()
-        if(rand<0.003):#20% Mutation Rate
+        if(rand<0.03):#20% Mutation Rate
             #print "mut"
             list_of_paths[i]=list_of_paths[i].mutate()#TEMPROAARY!!!
 
@@ -135,26 +183,30 @@ generate()
 
 show_paths_costs()
 plt.show()
+
 loc_avg=0
-for j in range(70000):
+for j in range(10000):
 
 
 
     plt.scatter(xaxis, yaxis)
-    plt.pause(0.05)
+    plt.pause(0.01)
     plt.clf()
+    plt.subplot(5,1,(1,4))
     plt.plot(xaxis, yaxis)
-
+    plt.subplot(5, 1, 5)
+    plt.plot(time_list, cost_list)
+    plt.subplot(5, 1, (1,4))
     sorted_pathes = sorted(list_of_paths, key=lambda x: x.cost, reverse=False)
     list_of_paths = sorted_pathes
 
-    #mutate_generation()
+    mutate_generation()
+    #nodes_swap()
     crossover()
-
+    plt.title("Length of Current Route " +str(least_cost)+ " at " + str(detection_time)+"\n"+str(time.time()-start_time))
     min_of_generation = sorted_pathes[0]
     if (best_path is None):
         best_path = min_of_generation
-
 
 
     print "Min is :"+str(best_path.getCost())
@@ -174,6 +226,12 @@ for j in range(70000):
     globalmin =best_path.cost
     if (globalmin > localmin):
         best_path = copy.deepcopy(min_of_generation)
+        detection_time=time.time()-start_time
+        time_list.append(detection_time)
+        cost_list.append(best_path.cost)
+        least_cost=best_path.cost
+
+
 print "Xaxis\tYaxis"
 for i in range(0,len(best_path.nodes) - 1):
 
