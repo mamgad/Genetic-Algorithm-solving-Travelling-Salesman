@@ -1,10 +1,12 @@
 Solving travelling salesman problem using artificial intelligence with real time plotting for visualization of paths and performance 
 
 
-Example:
+<h3>Example:</h3>
 
-Problem:
-http://imgur.com/a/WuO3K
+<h4>Problem:</h4>
 
-Solution:
-http://imgur.com/a/F3hTT
+![Problem](http://i.imgur.com/69RWv9N.png)
+
+<h4>Solution:</h4>
+
+![Solution](http://i.imgur.com/0D4xa3C.png)
