@@ -17,6 +17,8 @@ yaxis=[]
 best_path=None
 r_map=None
 crossover_mapping=None
+generation_size=1000
+number_of_selected_gens=400
 
 def nodes_swap():
     global best_path
@@ -32,11 +34,11 @@ def nodes_swap():
     print "lenth in swap is "+str(len(list_of_paths))
 def crossover():
     global list_of_paths
-    list_of_paths=list_of_paths[:400]
+    list_of_paths=list_of_paths[:number_of_selected_gens]#Select specific number of genes
 
-    for j in range(0,200):
-        rand1 = random.randint(0, 200-1)
-        rand2 = random.randint(0, 400-1)
+    for j in range(0,(generation_size-number_of_selected_gens)/2):
+        rand1 = random.randint(0, (len(list_of_paths)/3)-1)
+        rand2 = random.randint(0, len(list_of_paths)-1)
         if (random.random()<1):
             #list_of_paths.append(Graph.crossover(list_of_paths[rand1], list_of_paths[rand2]))
             result=Graph.crossover(list_of_paths[rand1], list_of_paths[rand2])
@@ -162,7 +164,7 @@ def mutate_generation():
     #print ""+str(best_path.getCost())
 
 def generate():
-    for j in range(0, 1000):  # Find 1000 Random path
+    for j in range(0, generation_size):  # Find 1000 Random path
         global list_of_paths
         global min_of_generation
         global best_path
